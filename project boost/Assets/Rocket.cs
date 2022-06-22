@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
+    [SerializeField]
+    float rcsThrust = 100f;
+
+    [SerializeField]
+    float engineThrust = 100f;
+
     Rigidbody rigidBody;
     AudioSource audioSource;
     // Start is called before the first frame update
@@ -21,14 +27,28 @@ public class Rocket : MonoBehaviour
         Rotate();
     }
 
-    
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly":
+                print("Fren");
+                break;
+            case "Fuel":
+                print("Fuel");
+                break ;
+            default:
+                print("Fucking dead bro");
+                break ;
+        }
+    }
 
     private void Thrust()
     {
         //speed up
         if (Input.GetKey(KeyCode.Space))
         {
-            rigidBody.AddRelativeForce(Vector3.up);
+            rigidBody.AddRelativeForce(Vector3.up*engineThrust);
             //print(KeyCode.Space+"   pressed");
             if (!audioSource.isPlaying)
             {
@@ -45,29 +65,27 @@ public class Rocket : MonoBehaviour
 
     private void Rotate()
     {
+        rigidBody.freezeRotation = true;
 
         //turn left
         if (Input.GetKey(KeyCode.A))
         {
-            rigidBody.freezeRotation = true;
 
-            transform.Rotate(Vector3.forward * Time.deltaTime * 100);
-            print(KeyCode.A + "   pressed");
-            rigidBody.freezeRotation = false;
+            transform.Rotate(Vector3.forward * Time.deltaTime * rcsThrust);
+            //print(KeyCode.A + "   pressed");
 
         }
         //turn right
         else if (Input.GetKey(KeyCode.D))
         {
-            rigidBody.freezeRotation = true;
 
-            transform.Rotate(-Vector3.forward * Time.deltaTime * 100);
+            transform.Rotate(-Vector3.forward * Time.deltaTime * rcsThrust);
 
-            print(KeyCode.D + "   pressed");
-            rigidBody.freezeRotation = false;
+            //print(KeyCode.D + "   pressed");
 
         }
 
+        rigidBody.freezeRotation = false;
 
     }
 }
